@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/conde-nast-international/terraform-provider-http/http"
 	"github.com/hashicorp/terraform/plugin"
-	"github.com/terraform-providers/terraform-provider-http/http"
 )
 
 func main() {
