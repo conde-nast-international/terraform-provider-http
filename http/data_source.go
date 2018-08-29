@@ -44,7 +44,7 @@ func dataSource() *schema.Resource {
 
 			"allow_insecure": &schema.Schema{
 				Type:     schema.TypeBool,
-				Computed: false,
+				Optional: true,
 				Default:  false,
 				Elem: &schema.Schema{
 					Type: schema.TypeBool,
@@ -59,9 +59,15 @@ func dataSourceRead(d *schema.ResourceData, meta interface{}) error {
 	url := d.Get("url").(string)
 	headers := d.Get("request_headers").(map[string]interface{})
 
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: d.Get("allow_insecure").(bool)}
+	allow_insecure := d.Get("allow_insecure").(bool)
 
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: allow_insecure,
+			},
+		},
+	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
